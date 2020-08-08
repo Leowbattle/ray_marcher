@@ -1,0 +1,57 @@
+{
+	"camera": {
+		"position": {
+			"x": 4.0,
+			"y": 0.0,
+			"z": 0.0
+		},
+		"target": {
+			"x": 0.0,
+			"y": 0.0,
+			"z": 0.0
+		},
+		"fov": 45.0
+	},
+	"light": {
+		"position": {
+			"x": 4.0,
+			"y": 0.0,
+			"z": 0.0
+		}
+	},
+	"objects": [
+		{
+			"position": {
+				"x": 0.0,
+				"y": -1.0,
+				"z": 0.0
+			},
+			"geometry": {
+				"type": "Sphere",
+				"r": 1.0
+			}
+		},
+		{
+			"position": {
+				"x": 0.0,
+				"y": 1.0,
+				"z": 0.0
+			},
+			"geometry": {
+				"type": "Sphere",
+				"r": 1.0
+			}
+		},
+		{
+			"position": {
+				"x": 0.0,
+				"y": 0.0,
+				"z": 1.0
+			},
+			"geometry": {
+				"type": "Sphere",
+				"r": 1.5
+			}
+		}
+	]
+}
