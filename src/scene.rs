@@ -12,12 +12,16 @@ pub struct Camera {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Environment {
+	pub background_colour: Colour,
 	pub ambient_light: real,
 }
 
 impl Default for Environment {
 	fn default() -> Environment {
-		Environment { ambient_light: 0.0 }
+		Environment {
+			background_colour: Colour::rgb(0.0, 0.0, 0.0),
+			ambient_light: 0.0,
+		}
 	}
 }
 

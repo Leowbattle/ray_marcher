@@ -8,12 +8,27 @@ pub struct Object {
 	#[serde(default = "Vec3::zero")]
 	pub position: Vec3,
 
+	#[serde(default)]
+	pub material: Material,
 	pub geometry: Box<dyn Geometry>,
 }
 
 impl Object {
 	pub fn distance(&self, p: Vec3) -> real {
 		self.geometry.distance(p - self.position)
+	}
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Material {
+	pub colour: Colour,
+}
+
+impl Default for Material {
+	fn default() -> Material {
+		Material {
+			colour: Colour::rgb(1.0, 0.0, 0.0),
+		}
 	}
 }
 

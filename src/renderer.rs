@@ -1,4 +1,5 @@
 use crate::maths::*;
+use crate::object::*;
 use crate::scene::*;
 
 use std::error::Error;
@@ -77,11 +78,11 @@ pub fn render(
 				Some((object, distance)) => {
 					let p = scene.camera.position + direction * distance;
 					let normal = get_normal(|p| object.distance(p), p);
-					let colour = shade(normal, p, &scene.environment, &scene.light);
+					let colour = shade(normal, p, &object, &scene.environment, &scene.light);
 					// let colour = normal * 0.5 + Vec3::new(0.5, 0.5, 0.5);
 					colour
 				}
-				None => Colour::rgb(0.0, 0.0, 0.0),
+				None => scene.environment.background_colour,
 			};
 
 			let i = (y * width + x) * std::mem::size_of::<image::Rgb<u8>>();
@@ -130,7 +131,13 @@ fn get_normal(scene_sdf: impl Fn(Vec3) -> real, p: Vec3) -> Vec3 {
 	.normalize()
 }
 
-fn shade(normal: Vec3, pixel_pos: Vec3, environment: &Environment, light: &Light) -> Colour {
+fn shade(
+	normal: Vec3,
+	pixel_pos: Vec3,
+	object: &Object,
+	environment: &Environment,
+	light: &Light,
+) -> Colour {
 	let mut light_dir = light.position - pixel_pos;
 	let distance = light_dir.magnitude();
 	light_dir = light_dir.normalize();
@@ -140,5 +147,5 @@ fn shade(normal: Vec3, pixel_pos: Vec3, environment: &Environment, light: &Light
 
 	let light = environment.ambient_light + diffuse_strength;
 
-	Colour::rgb(light, light, light)
+	object.material.colour * light
 }
