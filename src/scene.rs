@@ -13,6 +13,9 @@ pub struct Camera {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Light {
 	pub position: Vec3,
+
+	#[serde(default = "real_one")]
+	pub strength: real,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -35,3 +38,7 @@ pub struct Scene {
 // 		}
 // 	}
 // }
+
+fn real_one() -> real {
+	1.0
+}

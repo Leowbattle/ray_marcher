@@ -1,4 +1,5 @@
 #![forbid(unsafe_code)]
+#![feature(clamp)]
 
 mod maths;
 mod object;
