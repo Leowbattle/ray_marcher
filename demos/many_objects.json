@@ -1,0 +1,55 @@
+{
+	"camera": {
+		"position": {
+			"x": 5.0,
+			"y": 8.0,
+			"z": 7.0
+		},
+		"target": {
+			"x": 0.0,
+			"y": 0.0,
+			"z": 0.0
+		},
+		"fov": 45.0
+	},
+	"environment": {
+		"background_colour": {
+			"r": 1.0,
+			"g": 1.0,
+			"b": 1.0
+		},
+		"ambient_light": 0.35
+	},
+	"light": {
+		"position": {
+			"x": 8.0,
+			"y": 5.0,
+			"z": 7.0
+		},
+		"strength": 100.0
+	},
+	"objects": [
+		{
+			"geometry": {
+				"type": "Cube"
+			}
+		},
+		{
+			"position": {
+				"x": 0,
+				"y": 2,
+				"z": 0
+			},
+			"material": {
+				"colour": {
+					"r": 0,
+					"g": 1,
+					"b": 0
+				}
+			},
+			"geometry": {
+				"type": "Sphere"
+			}
+		}
+	]
+}
