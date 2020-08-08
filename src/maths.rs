@@ -1,3 +1,5 @@
+use serde::{Deserialize, Serialize};
+
 #[allow(non_camel_case_types)]
 pub type real = f32;
 
@@ -11,4 +13,39 @@ pub type Mat4 = cgmath::Matrix4<real>;
 
 pub type Point3 = cgmath::Point3<real>;
 
-pub type Colour = image::Rgb<u8>;
+#[derive(Copy, Clone, Debug, Serialize, Deserialize)]
+pub struct Colour {
+	pub r: real,
+	pub g: real,
+	pub b: real,
+}
+
+impl Colour {
+	pub fn rgb(r: real, g: real, b: real) -> Colour {
+		Colour { r, g, b }
+	}
+}
+
+impl std::ops::Mul<real> for Colour {
+	type Output = Colour;
+
+	fn mul(self, x: real) -> Colour {
+		Colour::rgb(self.r * x, self.g * x, self.b * x)
+	}
+}
+
+pub fn real_mod(x: real, y: real) -> real {
+	x - y * (x / y).floor()
+}
+
+pub fn vec3_mod(a: Vec3, b: Vec3) -> Vec3 {
+	Vec3 {
+		x: real_mod(a.x, b.x),
+		y: real_mod(a.y, b.y),
+		z: real_mod(a.z, b.z),
+	}
+}
+
+pub fn real_one() -> real {
+	1.0
+}

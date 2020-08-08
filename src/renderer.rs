@@ -77,21 +77,17 @@ pub fn render(
 				Some((object, distance)) => {
 					let p = scene.camera.position + direction * distance;
 					let normal = get_normal(|p| object.distance(p), p);
-					let colour = shade(normal, p, &scene.light);
+					let colour = shade(normal, p, &scene.environment, &scene.light);
 					// let colour = normal * 0.5 + Vec3::new(0.5, 0.5, 0.5);
-					Colour::from([
-						(colour.x * 255.0) as u8,
-						(colour.y * 255.0) as u8,
-						(colour.z * 255.0) as u8,
-					])
+					colour
 				}
-				None => Colour::from([0, 0, 0]),
+				None => Colour::rgb(0.0, 0.0, 0.0),
 			};
 
 			let i = (y * width + x) * std::mem::size_of::<image::Rgb<u8>>();
-			buffer[i + 0] = colour[0];
-			buffer[i + 1] = colour[1];
-			buffer[i + 2] = colour[2];
+			buffer[i + 0] = (colour.r * 255.0) as u8;
+			buffer[i + 1] = (colour.g * 255.0) as u8;
+			buffer[i + 2] = (colour.b * 255.0) as u8;
 		}
 	}
 
@@ -134,12 +130,15 @@ fn get_normal(scene_sdf: impl Fn(Vec3) -> real, p: Vec3) -> Vec3 {
 	.normalize()
 }
 
-fn shade(normal: Vec3, pixel_pos: Vec3, light: &Light) -> Vec3 {
+fn shade(normal: Vec3, pixel_pos: Vec3, environment: &Environment, light: &Light) -> Colour {
 	let mut light_dir = light.position - pixel_pos;
 	let distance = light_dir.magnitude();
 	light_dir = light_dir.normalize();
 	let attenuation = 1.0 / (1.0 + distance * distance);
 	let diffuse_strength =
 		(normal.dot(light_dir).max(0.0) * attenuation * light.strength).clamp(0.0, 1.0);
-	Vec3::new(diffuse_strength, diffuse_strength, diffuse_strength)
+
+	let light = environment.ambient_light + diffuse_strength;
+
+	Colour::rgb(light, light, light)
 }

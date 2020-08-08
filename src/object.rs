@@ -1,3 +1,4 @@
+///! Reference: https://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm
 use serde::{Deserialize, Serialize};
 
 use crate::maths::*;
@@ -22,14 +23,34 @@ pub trait Geometry: std::fmt::Debug {
 	fn distance(&self, p: Vec3) -> real;
 }
 
-#[derive(Copy, Clone, Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Sphere {
-	pub r: real,
+	#[serde(default = "real_one")]
+	pub radius: real,
 }
 
 #[typetag::serde]
 impl Geometry for Sphere {
 	fn distance(&self, p: Vec3) -> real {
-		p.magnitude() - self.r
+		p.magnitude() - self.radius
 	}
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct InfiniteRepetition {
+	#[serde(default = "default_period")]
+	pub period: Vec3,
+	pub child: Box<dyn Geometry>,
+}
+
+#[typetag::serde]
+impl Geometry for InfiniteRepetition {
+	fn distance(&self, p: Vec3) -> real {
+		self.child
+			.distance(vec3_mod(p + 0.5 * self.period, self.period) - 0.5 * self.period)
+	}
+}
+
+fn default_period() -> Vec3 {
+	Vec3::new(1.0, 1.0, 1.0)
 }

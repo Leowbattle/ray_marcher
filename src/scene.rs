@@ -11,6 +11,17 @@ pub struct Camera {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+pub struct Environment {
+	pub ambient_light: real,
+}
+
+impl Default for Environment {
+	fn default() -> Environment {
+		Environment { ambient_light: 0.0 }
+	}
+}
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Light {
 	pub position: Vec3,
 
@@ -21,24 +32,8 @@ pub struct Light {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Scene {
 	pub camera: Camera,
+	#[serde(default)]
+	pub environment: Environment,
 	pub light: Light,
 	pub objects: Vec<Object>,
-}
-
-// impl Scene {
-// 	pub fn empty() -> Scene {
-// 		Scene {
-// 			camera: Camera {
-// 				pos: Vec3::zero(),
-// 				target: Vec3::zero(),
-// 				fov: 45.0,
-// 			},
-// 			light: Light { pos: Vec3::zero() },
-// 			objects: vec![],
-// 		}
-// 	}
-// }
-
-fn real_one() -> real {
-	1.0
 }
