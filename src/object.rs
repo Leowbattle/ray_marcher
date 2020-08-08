@@ -38,6 +38,8 @@ pub trait Geometry: std::fmt::Debug {
 	fn distance(&self, p: Vec3) -> real;
 }
 
+// Shapes
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Sphere {
 	#[serde(default = "real_one")]
@@ -65,11 +67,13 @@ impl Geometry for Cube {
 	}
 }
 
+// Operators
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct InfiniteRepetition {
 	#[serde(default = "default_period")]
 	pub period: Vec3,
-	pub child: Box<dyn Geometry>,
+	pub child: Object,
 }
 
 #[typetag::serde]
@@ -77,6 +81,44 @@ impl Geometry for InfiniteRepetition {
 	fn distance(&self, p: Vec3) -> real {
 		self.child
 			.distance(vec3_mod(p + 0.5 * self.period, self.period) - 0.5 * self.period)
+	}
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Union {
+	pub a: Object,
+	pub b: Object,
+}
+
+#[typetag::serde]
+impl Geometry for Union {
+	fn distance(&self, p: Vec3) -> real {
+		self.a.distance(p).min(self.b.distance(p))
+	}
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Subtraction {
+	pub a: Object,
+	pub b: Object,
+}
+
+#[typetag::serde]
+impl Geometry for Subtraction {
+	fn distance(&self, p: Vec3) -> real {
+		(-self.b.distance(p)).max(self.a.distance(p))
+	}
+}
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Intersection {
+	pub a: Object,
+	pub b: Object,
+}
+
+#[typetag::serde]
+impl Geometry for Intersection {
+	fn distance(&self, p: Vec3) -> real {
+		(self.b.distance(p)).max(self.a.distance(p))
 	}
 }
 

@@ -57,7 +57,7 @@ use std::time::{Duration, Instant};
 #[allow(dead_code)]
 fn time(mut f: impl FnMut()) -> Duration {
 	let start = Instant::now();
-	const TIMES: u32 = 100;
+	const TIMES: u32 = 20;
 	for _ in 0..TIMES {
 		f();
 	}

@@ -54,6 +54,10 @@ pub fn vec3_max(v: Vec3, x: real) -> Vec3 {
 	Vec3::new(v.x.max(x), v.y.max(x), v.z.max(x))
 }
 
+pub fn vec3_reflect(i: Vec3, n: Vec3) -> Vec3 {
+	i - 2.0 * n.dot(i) * n
+}
+
 pub fn real_one() -> real {
 	1.0
 }
