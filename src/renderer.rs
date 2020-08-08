@@ -20,8 +20,18 @@ impl Error for RenderError {}
 
 fn get_direction(pos: Vec2, resolution: Vec2, fov: real) -> Vec3 {
 	let xy = pos - resolution / 2.0;
-	let z = resolution.y / fov.tan() / 2.0;
+	let z = resolution.y / (fov / 2.0).tan();
 	Vec3::new(xy.x, xy.y, -z).normalize()
+}
+
+fn get_view_matrix(eye: Vec3, center: Vec3, up: Vec3) -> Mat4 {
+	let f = (center - eye).normalize();
+	let s = f.cross(up).normalize();
+	let u = s.cross(f);
+
+	Mat4::new(
+		s.x, s.y, s.z, 0.0, u.x, u.y, u.z, 0.0, -f.x, -f.y, -f.z, 0.0, 0.0, 0.0, 0.0, 1.0,
+	)
 }
 
 pub fn render(
@@ -39,24 +49,12 @@ pub fn render(
 	let fov = scene.camera.fov.to_radians();
 	let resolution = Vec2::new(width as real, height as real);
 
-	let view_matrix = Mat4::look_at(
-		Point3::new(
-			scene.camera.position.x,
-			scene.camera.position.y,
-			scene.camera.position.z,
-		),
-		Point3::new(
-			scene.camera.target.x,
-			scene.camera.target.y,
-			scene.camera.target.z,
-		),
-		Vec3::unit_y(),
-	);
+	let view_matrix = get_view_matrix(scene.camera.position, scene.camera.target, -Vec3::unit_y());
 
 	for y in 0..height {
 		for x in 0..width {
 			let mut direction = get_direction(Vec2::new(x as real, y as real), resolution, fov);
-			direction = -(view_matrix * direction.extend(0.0)).truncate();
+			direction = (view_matrix * direction.extend(0.0)).truncate();
 
 			let result = scene
 				.objects
@@ -79,7 +77,6 @@ pub fn render(
 					let p = scene.camera.position + direction * distance;
 					let normal = get_normal(|p| object.distance(p), p);
 					let colour = shade(normal, p, &object, &scene.environment, &scene.light);
-					// let colour = normal * 0.5 + Vec3::new(0.5, 0.5, 0.5);
 					colour
 				}
 				None => scene.environment.background_colour,

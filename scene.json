@@ -1,9 +1,9 @@
 {
 	"camera": {
 		"position": {
-			"x": 4.0,
-			"y": 0.0,
-			"z": 0.0
+			"x": 8.0,
+			"y": 5.0,
+			"z": 7.0
 		},
 		"target": {
 			"x": 0.0,
@@ -16,24 +16,24 @@
 		"background_colour": {
 			"r": 1.0,
 			"g": 1.0,
-			"b": 0.0
+			"b": 1.0
 		},
 		"ambient_light": 0.35
 	},
 	"light": {
 		"position": {
-			"x": 20.0,
-			"y": 20.0,
-			"z": 0.0
+			"x": 8.0,
+			"y": 5.0,
+			"z": 7.0
 		},
-		"strength": 400.0
+		"strength": 100.0
 	},
 	"objects": [
 		{
 			"position": {
 				"x": 0.0,
 				"y": 0.0,
-				"z": 1.0
+				"z": 0.0
 			},
 			"material": {
 				"colour": {
@@ -43,32 +43,13 @@
 				}
 			},
 			"geometry": {
-				"type": "Sphere",
-				"radius": 1.0
+				"type": "Cube"
 			}
 		},
 		{
 			"position": {
-				"x": 0.0,
+				"x": 2.0,
 				"y": 0.0,
-				"z": -1.0
-			},
-			"material": {
-				"colour": {
-					"r": 0.0,
-					"g": 1.0,
-					"b": 0.0
-				}
-			},
-			"geometry": {
-				"type": "Sphere",
-				"radius": 1.0
-			}
-		},
-		{
-			"position": {
-				"x": 0.0,
-				"y": 1.5,
 				"z": 0.0
 			},
 			"material": {
@@ -79,8 +60,7 @@
 				}
 			},
 			"geometry": {
-				"type": "Sphere",
-				"radius": 1.0
+				"type": "Cube"
 			}
 		}
 	]

@@ -52,6 +52,20 @@ impl Geometry for Sphere {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+pub struct Cube {
+	#[serde(default = "vec3_ones")]
+	pub size: Vec3,
+}
+
+#[typetag::serde]
+impl Geometry for Cube {
+	fn distance(&self, p: Vec3) -> real {
+		let q = vec3_abs(p) - self.size;
+		vec3_max(q, 0.0).magnitude() + q.x.max(q.y.max(q.z)).min(0.0)
+	}
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct InfiniteRepetition {
 	#[serde(default = "default_period")]
 	pub period: Vec3,

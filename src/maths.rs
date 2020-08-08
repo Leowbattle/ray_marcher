@@ -46,6 +46,18 @@ pub fn vec3_mod(a: Vec3, b: Vec3) -> Vec3 {
 	}
 }
 
+pub fn vec3_abs(v: Vec3) -> Vec3 {
+	Vec3::new(v.x.abs(), v.y.abs(), v.z.abs())
+}
+
+pub fn vec3_max(v: Vec3, x: real) -> Vec3 {
+	Vec3::new(v.x.max(x), v.y.max(x), v.z.max(x))
+}
+
 pub fn real_one() -> real {
 	1.0
+}
+
+pub fn vec3_ones() -> Vec3 {
+	Vec3::new(1.0, 1.0, 1.0)
 }
