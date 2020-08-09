@@ -27,7 +27,7 @@ pub struct Material {
 impl Default for Material {
 	fn default() -> Material {
 		Material {
-			colour: Colour::rgb(1.0, 0.0, 0.0),
+			colour: Colour::rgb(1.0, 1.0, 1.0),
 		}
 	}
 }

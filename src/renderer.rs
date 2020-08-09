@@ -34,6 +34,10 @@ fn get_view_matrix(eye: Vec3, center: Vec3, up: Vec3) -> Mat4 {
 	)
 }
 
+const MIN_DISTANCE: real = 0.1;
+const MAX_DISTANCE: real = 100.0;
+const MAX_STEPS: usize = 100;
+
 pub fn render(
 	scene: &Scene,
 	width: usize,
@@ -60,15 +64,7 @@ pub fn render(
 				.objects
 				.iter()
 				.filter_map(|o| {
-					ray_march(
-						|p| o.distance(p),
-						scene.camera.position,
-						direction,
-						0.1,
-						100.0,
-						100,
-					)
-					.map(|d| (o, d))
+					ray_march(|p| o.distance(p), scene.camera.position, direction).map(|d| (o, d))
 				})
 				.min_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
 
@@ -76,7 +72,8 @@ pub fn render(
 				Some((object, distance)) => {
 					let p = scene.camera.position + direction * distance;
 					let normal = get_normal(|p| object.distance(p), p);
-					let colour = shade(normal, p, &object, &scene.environment, &scene.light);
+					let colour =
+						shade(&scene, normal, p, &object, &scene.environment, &scene.light);
 					colour
 				}
 				None => scene.environment.background_colour,
@@ -94,22 +91,15 @@ pub fn render(
 
 const EPSILON: real = 1e-4;
 
-pub fn ray_march(
-	scene_sdf: impl Fn(Vec3) -> real,
-	eye: Vec3,
-	direction: Vec3,
-	min_dist: real,
-	max_dist: real,
-	max_steps: usize,
-) -> Option<real> {
-	let mut depth = min_dist;
-	for _ in 0..max_steps {
+pub fn ray_march(scene_sdf: impl Fn(Vec3) -> real, eye: Vec3, direction: Vec3) -> Option<real> {
+	let mut depth = MIN_DISTANCE;
+	for _ in 0..MAX_STEPS {
 		let dist = scene_sdf(eye + depth * direction);
 		if dist < EPSILON {
 			return Some(depth);
 		}
 		depth += dist;
-		if depth >= max_dist {
+		if depth >= MAX_DISTANCE {
 			return None;
 		}
 	}
@@ -129,12 +119,19 @@ fn get_normal(scene_sdf: impl Fn(Vec3) -> real, p: Vec3) -> Vec3 {
 }
 
 fn shade(
+	scene: &Scene,
 	normal: Vec3,
 	pixel_pos: Vec3,
 	object: &Object,
 	environment: &Environment,
 	light: &Light,
 ) -> Colour {
+	let shadow = if in_shadow(scene, pixel_pos, light) {
+		0.8
+	} else {
+		1.0
+	};
+
 	let mut light_dir = light.position - pixel_pos;
 	let distance = light_dir.magnitude();
 	light_dir = light_dir.normalize();
@@ -144,5 +141,25 @@ fn shade(
 
 	let light = environment.ambient_light + diffuse_strength;
 
-	object.material.colour * light
+	object.material.colour * light * shadow
+}
+
+fn in_shadow(scene: &Scene, p: Vec3, light: &Light) -> bool {
+	let ray_dir = (light.position - p).normalize();
+
+	match ray_march(
+		|p| {
+			scene
+				.objects
+				.iter()
+				.map(|o| o.distance(p))
+				.min_by(|a, b| a.partial_cmp(&b).unwrap())
+				.unwrap()
+		},
+		p,
+		ray_dir,
+	) {
+		Some(_) => true,
+		None => false,
+	}
 }

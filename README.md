@@ -4,3 +4,4 @@
 ![](https://github.com/Leowbattle/ray_marcher/blob/master/demos/sphere.png)
 ![](https://github.com/Leowbattle/ray_marcher/blob/master/demos/many_objects.png)
 ![](https://github.com/Leowbattle/ray_marcher/blob/master/demos/infinite_subtraction.png)
+![](https://github.com/Leowbattle/ray_marcher/blob/master/demos/shadow_demo.png)

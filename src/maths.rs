@@ -60,6 +60,14 @@ pub fn real_one() -> real {
 	1.0
 }
 
+pub fn real_approx_eq(a: real, b: real) -> bool {
+	(a - b).abs() < 0.0001
+}
+
+pub fn vec3_approx_eq(a: Vec3, b: Vec3) -> bool {
+	real_approx_eq(a.x, b.x) && real_approx_eq(a.y, b.y) && real_approx_eq(a.z, b.z)
+}
+
 pub fn vec3_ones() -> Vec3 {
 	Vec3::new(1.0, 1.0, 1.0)
 }

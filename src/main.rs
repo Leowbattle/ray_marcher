@@ -6,6 +6,8 @@ mod object;
 mod renderer;
 mod scene;
 
+use maths::*;
+use object::*;
 use scene::*;
 
 use std::error::Error;
